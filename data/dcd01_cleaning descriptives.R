@@ -111,7 +111,14 @@ descriptives_clean <- map_dfr(1:nrow(unique_descriptives),
                               })
 
 
+hba1c_pct <- descriptives_clean %>% 
+  dplyr::filter(variable == "hba1c_mmol",Author %in% c("Ahlqvist 2018","Dennis 2019","Lugner 2021")) %>% 
+  mutate_at(vars(central,lower,upper),function(x) (0.09148*x) + 2.152) %>% 
+  mutate(variable = "hba1c_pct")
+
+
 bind_rows(descriptives_clean,
+          hba1c_pct,
           descriptives %>% 
             dplyr::filter(descriptive %in% c("count","percentage")) %>% 
             pivot_wider(names_from=descriptive,values_from=statistic)) %>% 

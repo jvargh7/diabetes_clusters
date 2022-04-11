@@ -1,6 +1,6 @@
 continuous_vars <- c("hba1c_mmol","hba1c_pct","bmi","age_diag","homa_b","homa_ir",
                      "hdlc","ldlc","totalc","tgl","egfr")
-names(continuous_vars) <- c("HbA1c (mmol/mol)","HbA1c (%)","BMI","Age at diagnosis","HOMA-B","HOMA-IR",
+names(continuous_vars) <- c("HbA1c (mmol/mol)","HbA1c (%)","BMI","Age in years","HOMA-B","HOMA-IR",
                             "HDLc","LDLc","Totalc","Triglycerides","eGFR")
 
 categorical_vars <- c("family_history","male","insulin","metformin","sulfonylureas",
