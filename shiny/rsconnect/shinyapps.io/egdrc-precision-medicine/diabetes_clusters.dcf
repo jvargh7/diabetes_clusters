@@ -1,0 +1,13 @@
+name: diabetes_clusters
+title: diabetes_clusters
+username:
+account: egdrc-precision-medicine
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6091581
+bundleId: 5799314
+url: https://egdrc-precision-medicine.shinyapps.io/diabetes_clusters/
+when: 1649956877.12304
+lastSyncTime: 1649956877.12304
+asMultiple: FALSE
+asStatic: FALSE

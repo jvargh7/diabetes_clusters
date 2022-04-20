@@ -2,7 +2,6 @@ prevalence <- readRDS(paste0("data/prevalence.RDS")) %>%
   mutate(label = paste0(Author,"\n",Study),
          group = factor(group,levels=c("SAID","SIDD","SIRD","MOD","MARD","SIDRD","MD"),ordered=TRUE))
 
-
 figP <- prevalence %>% 
   ggplot(data=.,aes(x=group,y=label,fill=value,label=sprintf("%0.1f",value))) +
   facet_wrap(~asian,nrow = 1,ncol=2,scales = "free_y") +

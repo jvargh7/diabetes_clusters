@@ -9,6 +9,7 @@
 
 library(shiny)
 library(ggplot2)
+library(tidyverse)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
@@ -21,11 +22,21 @@ shinyServer(function(input, output) {
         x_col = continuous_vars[input$xvar]
         y_col = continuous_vars[input$yvar]
         
-        df2 <-  df %>%
-            dplyr::filter(variable %in% c(x_col,y_col)) %>% 
-            mutate(var = case_when(variable == x_col ~ "x_col",
-                                   variable == y_col ~ "y_col")) %>% 
-            dplyr::select(label,var,asian,group,central,lower,upper) %>% 
+        df2 <-  bind_rows(
+            df %>%
+            dplyr::filter(group %in% c("T2D","SAID","SIDD","SIRD","MOD","MARD")) %>% 
+            dplyr::filter(variable %in% c(x_col))%>% 
+                mutate(var = case_when(variable == x_col ~ "x_col")),
+            df %>%
+                dplyr::filter(group %in% c("T2D","SAID","SIDD","SIRD","MOD","MARD")) %>% 
+                dplyr::filter(variable %in% c(y_col)) %>% 
+                mutate(var = case_when(
+                                       variable == y_col ~ "y_col")),
+        ) %>% 
+            mutate(group2 = factor(group,levels=c("T2D","SAID","SIDD","SIRD","MOD","MARD"),
+                                   labels=c("Type 2 Diabetes", "Severe Auto-immune Diabetes","Severe Insulin Deficient Diabetes", 
+                                            "Severe Insulin Resistant Diabetes","Mild Obesity-related Diabetes","Mild Age-related Diabetes"))) %>% 
+            dplyr::select(label,var,asian,group2,central,lower,upper) %>% 
             pivot_wider(names_from = var,values_from=c(central,lower,upper))
         
         # print(head(df2))
@@ -45,9 +56,14 @@ shinyServer(function(input, output) {
                               ymax = upper_y_col)) +
             xlab(input$xvar) +
             ylab(input$yvar) +
-            facet_wrap(~group,nrow = 4,ncol=2) +
+            facet_wrap(~group2,nrow = 2,ncol=3) +
             theme_bw() +
-            theme(legend.position = "bottom") +
+            ggtitle("Bivariate Median and IQR")+
+            
+            theme(legend.position = "bottom",
+                  title = element_text(size=15),
+                  legend.text = element_text(size=20),
+                  strip.text = element_text(size = 15)) +
             scale_color_manual(name = "",values=c("red","darkgreen"))
         
     )

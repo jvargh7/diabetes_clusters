@@ -9,6 +9,7 @@
 
 library(shiny)
 library(ggplot2)
+library(tidyverse)
 source("var_list.R")
 
 # Define UI for application that draws a histogram
@@ -20,9 +21,9 @@ shinyUI(fluidPage(
     sidebarLayout(
         sidebarPanel(
             selectInput(inputId = 'xvar',label = '',choices = names(continuous_vars)[1:10]),
-            selectInput(inputId = 'yvar',label = '',choices = names(continuous_vars)[2:11])),
+            selectInput(inputId = 'yvar',label = '',choices = names(continuous_vars)[2:11]),width = 3),
         
         # Show the scatterplot
-        mainPanel(plotOutput("scatter1",width = 600,height=800))
+        mainPanel(plotOutput("scatter1",width = 800,height=600))
     )
 ))

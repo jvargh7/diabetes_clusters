@@ -4,7 +4,7 @@
 # [8] "mean" 
 
 descriptives <- readxl::read_excel("data/Cluster Summaries.xlsx",sheet="Descriptives") %>% 
-  pivot_longer(cols=one_of("SAID","SIDD","SIRD","MOD","MARD","SIDRD","MD","T1D","T2D","LADA"),names_to="group",values_to="value") %>% 
+  pivot_longer(cols=one_of("SAID","SIDD","SIRD","MOD","MARD","SIDRD","UARD","IRD","MD","T1D","T2D","LADA"),names_to="group",values_to="value") %>% 
   mutate(value = str_replace_all(value,"·",".")) %>% 
   dplyr::filter(!is.na(value)) %>% 
   mutate(

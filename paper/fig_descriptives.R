@@ -1,20 +1,4 @@
-source("shiny/var_list.R")
-
-descriptives <- readRDS("data/descriptives.RDS") %>% 
-  dplyr::filter(group %in% c("T2D","SAID","SIDD","SIRD","MOD","MARD","SIDRD")) %>%
-  dplyr::filter(!Study %in% c("INSPIRED Ahlqvist","NCRCMDDC Additional"),variable %in% var_levels) %>% 
-  mutate(label = paste0(Author,"\n",Study),
-         asian = case_when(Study %in% c("CNDMDS","INSPIRED","INSPIRED Female","INSPIRED Male","ICMR-INDIAB","INSPIRED DTT","Fukushima CKD-DEM",
-                                        "SAVOR-TIMI 53","Shenzhen Hospital","Jiading Shanghai","Jiading Shanghai 4Y at Baseline","Jiading Shanghai 4Y at 4Y",
-                                        "China cities Males","China cities Females","China cities",
-                                        "NCRCMDDC Men","NCRCMDDC Women") ~ "Asian",
-                           TRUE ~ "Non Asian"),
-         group = factor(group,levels=c("T2D","SAID","SIDD","SIRD","MOD","MARD","SIDRD"),ordered=TRUE),
-         
-         var_names = factor(variable,levels=var_levels,labels=c(names(continuous_vars),names(categorical_vars)))
-         )
-
-saveRDS(descriptives,"shiny/data.RDS")
+descriptives <- readRDS("shiny/data.RDS")
 
 pdf(file = paste0(path_heterogeneity_dm,"/figures/Descriptives.pdf"),width = 15,height=8)
 for(v in names(continuous_vars)){
