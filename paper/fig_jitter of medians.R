@@ -13,11 +13,15 @@ figM <- descriptives %>%
                     # col = asian,
                     shape=asian,
                     group=asian)) +
-  geom_jitter(position = position_dodge(width=0.5)) +
+  geom_jitter(position = position_dodge(width=0.5),size=2) +
   coord_flip() +
   facet_grid(~var_names,scales="free_x") +
   theme_bw() +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        strip.text = element_text(size=12),
+        legend.text = element_text(size=15),
+        legend.key.size=unit(12,units="points")) +
   # scale_color_manual(name = "",values=c("black","grey20")) +
   scale_shape_manual(name = "",values=c(21,3)) +
   xlab("") + ylab("")
