@@ -16,6 +16,7 @@ shinyServer(function(input, output) {
     source("var_list.R",local=TRUE)
     
     df = readRDS("data.RDS")
+    # df = readRDS("shiny/data.RDS")
     
     # print(head(df))
     selectedData <- reactive({

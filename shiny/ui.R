@@ -14,14 +14,16 @@ source("var_list.R")
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
-    titlePanel("Visualizing Clusters"),
+    titlePanel("Diabetes Phenotypes: An interactive dashboard"),
+    tags$a(href="https://www.sciencedirect.com/science/article/pii/S1751991822001516", 
+           "Varghese and Narayan 2022 Primary Care Diabetes"),
     
     # Sidebar panel
     
     sidebarLayout(
         sidebarPanel(
-            selectInput(inputId = 'xvar',label = '',choices = names(continuous_vars)[1:10]),
-            selectInput(inputId = 'yvar',label = '',choices = names(continuous_vars)[2:11]),width = 3),
+            selectInput(inputId = 'xvar',label = '',choices = names(continuous_vars)[1:10],selected = "BMI"),
+            selectInput(inputId = 'yvar',label = '',choices = names(continuous_vars)[2:11],selected = "HbA1c (%)"),width = 3),
         
         # Show the scatterplot
         mainPanel(plotOutput("scatter1",width = 800,height=600))
