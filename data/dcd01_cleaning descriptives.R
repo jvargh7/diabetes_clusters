@@ -1,7 +1,7 @@
 # raw_descriptives <- readxl::read_excel("data/Cluster Summaries.xlsx",sheet="Descriptives")
 
 # [1] "count"              "percentage"         "mean (sd)"          "mean pm sd"         "count (percentage)" "median (q25, q75)"  "median (q25 - q75)"
-# [8] "mean" 
+# [8] "mean"               "median (q25; q75)"  "median [q25, q75]"
 
 descriptives <- readxl::read_excel("data/Cluster Summaries.xlsx",sheet="Descriptives") %>% 
   pivot_longer(cols=one_of("SAID","SIDD","SIRD","MOD","MARD","SIDRD","UARD","IRD","MD","T1D","T2D","LADA"),names_to="group",values_to="value") %>% 
@@ -23,13 +23,23 @@ descriptives <- readxl::read_excel("data/Cluster Summaries.xlsx",sheet="Descript
                    statistic == "mean pm sd" ~ str_extract(value,"[0-9\\.]+$")),
     
     median = case_when(statistic == "median (q25, q75)" ~ str_extract(value,"^[0-9\\.]+"),
-                       statistic == "median (q25 - q75)" ~ str_extract(value,"^[0-9\\.]+")),
+                       statistic == "median (q25 - q75)" ~ str_extract(value,"^[0-9\\.]+"),
+                       statistic == "median (q25; q75)" ~ str_extract(value,"^[0-9\\.]+"),
+                       statistic == "median [q25, q75]" ~ str_extract(value,"^[0-9\\.]+")
+                       ),
     
     q25 = case_when(statistic == "median (q25, q75)" ~ str_replace(str_extract(value,"\\([0-9\\.]+"),"\\(",""),
-                    statistic == "median (q25 - q75)" ~ str_replace(str_extract(value,"\\([0-9\\.]+"),"\\(","")),
+                    statistic == "median (q25 - q75)" ~ str_replace(str_extract(value,"\\([0-9\\.]+"),"\\(",""),
+                    statistic == "median (q25; q75)" ~ str_replace(str_extract(value,"\\([0-9\\.]+"),"\\(",""),
+                    statistic == "median [q25, q75]" ~ str_replace(str_extract(value,"\\[[0-9\\.]+"),"\\[","")
+                    
+                    ),
     
     q75 = case_when(statistic == "median (q25, q75)" ~ str_replace_all(str_extract(value,"[0-9\\.\\%]+\\)"),"(\\)|\\%)",""),
-                    statistic == "median (q25 - q75)" ~ str_replace_all(str_extract(value,"[0-9\\.\\%]+\\)"),"(\\)|\\%)",""))
+                    statistic == "median (q25 - q75)" ~ str_replace_all(str_extract(value,"[0-9\\.\\%]+\\)"),"(\\)|\\%)",""),
+                    statistic == "median (q25; q75)" ~ str_replace_all(str_extract(value,"[0-9\\.\\%]+\\)"),"(\\)|\\%)",""),
+                    statistic == "median [q25, q75]" ~ str_replace_all(str_extract(value,"[0-9\\.\\%]+\\]"),"(\\]|\\%)","")
+                    )
                     
     ) %>% 
   dplyr::select(Author,Indicator,Study,group,variable,
@@ -112,7 +122,7 @@ descriptives_clean <- map_dfr(1:nrow(unique_descriptives),
 
 
 hba1c_pct <- descriptives_clean %>% 
-  dplyr::filter(variable == "hba1c_mmol",Author %in% c("Ahlqvist 2018","Dennis 2019","Lugner 2021")) %>% 
+  dplyr::filter(variable == "hba1c_mmol",Author %in% c("Ahlqvist 2018","Dennis 2019","Lugner 2021","Bennet 2020","Christensen 2022")) %>% 
   mutate_at(vars(central,lower,upper),function(x) (0.09148*x) + 2.152) %>% 
   mutate(variable = "hba1c_pct")
 

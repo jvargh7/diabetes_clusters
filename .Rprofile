@@ -1,4 +1,4 @@
 require(tidyverse)
 
 
-path_heterogeneity_dm <- "C:/Cloud/OneDrive - Emory University/Papers/Heterogeneity in Diabetes Clusters"
+path_transportability_phenotypes <- "C:/Cloud/OneDrive - Emory University/Papers/Transportability of Phenotypes"
