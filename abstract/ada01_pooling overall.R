@@ -10,7 +10,6 @@ source("C:/code/external/functions/preprocessing/expit.R")
 library(metafor)
 
 phenotype = c("SAID","SIDD","SIRD","MOD","MARD")
-categories_md = c("Type A1","Type B","Type C")
 categories_dd = c("New","Established")
 categories_re = c("NH White","NH Asian")
 # https://www.metafor-project.org/doku.php/analyses:stijnen2010
@@ -32,17 +31,11 @@ diversity <- map_dfr(phenotype,
                                     dplyr::filter(!is.na(Phenotype)) %>% 
                                     mutate(prop = Phenotype/N);
                                   
-                                  
-                                  
-                                  p_est = map_dfr(categories_md,
-                                              function(c){
-                                                c_df = p_df %>% 
-                                                  dplyr::filter(Category == c);
-                                                
-                                                r = rma.glmm(measure="PLO", xi=Phenotype, ni=N, data=c_df)
-                                                
-                                                data.frame(strata = c,
-                                                           n_study = nrow(c_df),
+                                  r = rma.glmm(measure="PLO", xi=Phenotype, ni=N, data=p_df)
+                                  overall_est = data.frame(strata = "Overall",
+                                                           n_study = nrow(p_df),
+                                                           n_category = sum(p_df$N),
+                                                           n_total = sum(p_df$N),
                                                            beta = as.numeric(r$beta),
                                                            k = r$k,
                                                            se = r$se,
@@ -59,12 +52,8 @@ diversity <- map_dfr(phenotype,
                                                            QEp.LRT = r$QEp.LRT,
                                                            QE.Wld = r$QE.Wld,
                                                            QEp.Wld = r$QEp.Wld,
-                                                           QE.df = r$QE.df) %>% 
-                                                return(.)
-                                                
-                                              });
-                                  
-                                  
+                                                           QE.df = r$QE.df);
+
                                   d_est = map_dfr(categories_dd,
                                                   function(d){
                                                     d_df = p_df %>% 
@@ -74,6 +63,8 @@ diversity <- map_dfr(phenotype,
                                                     
                                                     data.frame(strata = d,
                                                                n_study = nrow(d_df),
+                                                               n_category = sum(d_df$N),
+                                                               n_total = sum(p_df$N),
                                                                beta = as.numeric(r$beta),
                                                                k = r$k,
                                                                se = r$se,
@@ -104,6 +95,8 @@ diversity <- map_dfr(phenotype,
                                                     
                                                     data.frame(strata = re,
                                                                n_study = nrow(r_df),
+                                                               n_category = sum(r_df$N),
+                                                               n_total = sum(p_df$N),
                                                                beta = as.numeric(r$beta),
                                                                k = r$k,
                                                                se = r$se,
@@ -126,7 +119,7 @@ diversity <- map_dfr(phenotype,
                                                   });
                                   
                                   
-                                  bind_rows(p_est,
+                                  bind_rows(overall_est,
                                             d_est,
                                             r_est)  %>% 
                                     mutate(phenotype = p,
@@ -178,3 +171,4 @@ z_diversity %>%
   pivot_wider(names_from=phenotype,values_from="z_p_val") %>% 
   
 write_csv(.,"abstract/tab_z diversity.csv")
+
